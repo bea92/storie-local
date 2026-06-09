@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Mini Storie</title>
+
+  <style>
+    :root {
+      --blue: #123d70;
+      --blue-dark: #082b50;
+      --cream: #f4ecdd;
+      --paper: #fff8ec;
+      --ink: #123d70;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", sans-serif;
+      color: var(--cream);
+      background: var(--blue-dark);
+    }
+
+    .skin {
+      min-height: 100vh;
+      background-image:
+        linear-gradient(rgba(6, 20, 35, .18), rgba(6, 20, 35, .55)),
+        url("sea-pollution.png");
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      padding-bottom: 32px;
+    }
+
+    .page {
+      max-width: 760px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 12vh;
+    }
+
+    .eu-logo {
+      width: 185px;
+      max-width: 45%;
+      height: auto;
+      display: block;
+    }
+
+    .nc-logo {
+      width: 190px;
+      max-width: 45%;
+      height: auto;
+      display: block;
+    }
+
+    .paper {
+      background: rgba(255, 248, 236, .96);
+      color: var(--ink);
+      padding: 34px 24px;
+      border-radius: 28px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.34);
+      border: 1px solid rgba(255,255,255,.65);
+    }
+
+    .paper h2 {
+      margin: 0;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-size: clamp(34px, 7vw, 52px);
+      line-height: .95;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .divider {
+      width: 86px;
+      height: 5px;
+      background: var(--blue);
+      margin: 18px auto 22px;
+      border-radius: 999px;
+    }
+
+    .intro {
+      max-width: 520px;
+      margin: 0 auto 28px;
+      text-align: center;
+      color: var(--blue);
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .label {
+      margin: 24px 0 10px;
+      color: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 18px;
+      border: 2px solid rgba(18, 61, 112, .85);
+      border-radius: 18px;
+      background: rgba(255,255,255,.82);
+      color: var(--ink);
+      font-family: "Inter", sans-serif;
+      font-size: 18px;
+      line-height: 1.45;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      background: white;
+      box-shadow: 0 0 0 4px rgba(18,61,112,.12);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(18,61,112,.55);
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      max-width: 380px;
+      margin: 26px auto 0;
+      padding: 18px 24px;
+      border: none;
+      border-radius: 999px;
+      background: var(--blue);
+      color: white;
+      font-family: "Inter", sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(8, 43, 80, .26);
+    }
+
+    button:hover {
+      background: var(--blue-dark);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .story-card {
+      margin: 20px 0;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(18,61,112,.18);
+    }
+
+    .story-text {
+      color: var(--blue);
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 400;
+      white-space: pre-wrap;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .thanks {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .thanks p {
+      color: var(--blue);
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 18px;
+      }
+
+      .topbar {
+        margin-bottom: 18vh;
+      }
+
+      .eu-logo {
+        width: 150px;
+      }
+
+      .nc-logo {
+        width: 155px;
+      }
+
+      .paper {
+        padding: 28px 18px;
+        border-radius: 24px;
+      }
+
+      .intro {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="skin">
+    <main class="page">
+
+      <div class="topbar">
+        <img src="EU_logo.png" alt="Finanziato dall'Unione europea" class="eu-logo">
+        <img src="NC_logo.png" alt="Neuroclima" class="nc-logo">
+      </div>
+
+      <section class="paper">
+        <h2>
+          Quella bottiglia è mia!<br>
+        </h2>
+
+        <div class="divider"></div>
+
+        <p class="intro">
+         Osserva l'immagine e pensa a una storia della tua vita che possa essere collegata a ciò che rappresenta.
+         Raccontala brevemente, senza includere nomi, cognomi o altri dati personali.
+        </p>
+
+        <section id="step1">
+          <div class="label">
+            Inserisci il codice della foto che trovi sulla tua cartolina
+          </div>
+
+          <input
+            id="photoCode"
+            type="text"
+            placeholder="Inserisci il codice della foto..."
+            autocomplete="off"
+          >
+
+          <div class="label">
+            Racconta la tua storia
+          </div>
+
+          <textarea
+            id="story"
+            placeholder="Scrivi qui la tua storia..."
+          ></textarea>
+
+          <button id="sendStory">
+            Condividi la tua storia →
+          </button>
+        </section>
+
+        <section id="step2" class="hidden">
+          <div class="label">
+            Questa è un'altra storia dalla collettività
+          </div>
+                  <p>...continuala tu, collegandola alla storia precedente</p>
+
+          <div class="story-card">
+            <div id="assignedStory" class="story-text"></div>
+          </div>
+
+          <textarea
+            id="sentence"
+            maxlength="250"
+            placeholder="Aggiungi una frase..."
+          ></textarea>
+
+          <button id="sendSentence">
+            Contribuisci alla storia→
+          </button>
+        </section>
+
+        <section id="done" class="hidden thanks">
+          <h2>Grazie</h2>
+
+          <p>
+            La tua voce è entrata
+            nella rete delle storie.
+          </p>
+        </section>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    let state = {
+      assignment_id: null,
+      participant_story_id: null,
+      assigned_story_id: null,
+      photo_code: null
+    };
+
+    const $ = id => document.getElementById(id);
+
+    $("sendStory").addEventListener("click", sendStory);
+    $("sendSentence").addEventListener("click", sendSentence);
+
+    async function sendStory() {
+      const photoCode = $("photoCode").value.trim();
+      const text = $("story").value.trim();
+
+      if (!photoCode) {
+        alert("Inserisci prima il codice della foto.");
+        return;
+      }
+
+      if (!text) {
+        alert("Scrivi prima una storia.");
+        return;
+      }
+
+      $("sendStory").disabled = true;
+
+      const response = await fetch("/api/story", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text,
+          photo_code: photoCode
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Errore nel salvataggio.");
+        $("sendStory").disabled = false;
+        return;
+      }
+
+      state.assignment_id = data.assignment_id;
+      state.participant_story_id = data.participant_story_id;
+      state.assigned_story_id = data.assigned_story.id;
+      state.photo_code = photoCode;
+
+      $("assignedStory").innerText = data.assigned_story.text;
+      $("photoCode").disabled = true;
+      $("story").disabled = true;
+      $("step2").classList.remove("hidden");
+
+      $("step2").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    async function sendSentence() {
+      const sentence = $("sentence").value.trim();
+
+      if (!sentence) {
+        alert("Scrivi prima una frase.");
+        return;
+      }
+
+      $("sendSentence").disabled = true;
+
+      const response = await fetch("/api/continue", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          assignment_id: state.assignment_id,
+          participant_story_id: state.participant_story_id,
+          assigned_story_id: state.assigned_story_id,
+          photo_code: state.photo_code,
+          sentence
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Errore nel salvataggio.");
+        $("sendSentence").disabled = false;
+        return;
+      }
+
+      $("step1").classList.add("hidden");
+      $("step2").classList.add("hidden");
+      $("done").classList.remove("hidden");
+
+      $("done").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  </script>
+</body>
+</html>
