@@ -23,14 +23,15 @@ db.serialize(() => {
     FOREIGN KEY(parent_story_id) REFERENCES stories(id)
   )`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS assignments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    participant_story_id INTEGER NOT NULL,
-    assigned_story_id INTEGER NOT NULL,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(participant_story_id) REFERENCES stories(id),
-    FOREIGN KEY(assigned_story_id) REFERENCES stories(id)
-  )`);
+db.run(`CREATE TABLE IF NOT EXISTS stories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  text TEXT NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'original',
+  photo_code TEXT,
+  parent_story_id INTEGER,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(parent_story_id) REFERENCES stories(id)
+)`);
 
   db.run(`CREATE TABLE IF NOT EXISTS continuations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,36 +63,44 @@ db.serialize(() => {
 
 app.post("/api/story", (req, res) => {
   const text = String(req.body.text || "").trim();
+  const photoCode = String(req.body.photo_code || "").trim();
 
   if (!text) {
     return res.status(400).json({ error: "Testo mancante." });
   }
 
-  db.run(
-    "INSERT INTO stories(text, kind) VALUES (?, 'original')",
-    [text],
-    function (err) {
+  if (!photoCode) {
+    return res.status(400).json({ error: "Codice foto mancante." });
+  }
+
+  db.get(
+    "SELECT * FROM stories ORDER BY id DESC LIMIT 1",
+    [],
+    (err, lastStory) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      const participantStoryId = this.lastID;
-
-      db.get(
-        "SELECT * FROM stories WHERE id != ? ORDER BY RANDOM() LIMIT 1",
-        [participantStoryId],
-        (err, assignedStory) => {
+      db.run(
+        "INSERT INTO stories(text, kind, photo_code, parent_story_id) VALUES (?, 'original', ?, ?)",
+        [text, photoCode, lastStory ? lastStory.id : null],
+        function (err) {
           if (err) return res.status(500).json({ error: err.message });
-          if (!assignedStory) return res.status(404).json({ error: "Nessuna storia disponibile." });
+
+          const participantStoryId = this.lastID;
+
+          if (!lastStory) {
+            return res.status(404).json({ error: "Nessuna storia precedente disponibile." });
+          }
 
           db.run(
             "INSERT INTO assignments(participant_story_id, assigned_story_id) VALUES (?, ?)",
-            [participantStoryId, assignedStory.id],
+            [participantStoryId, lastStory.id],
             function (err) {
               if (err) return res.status(500).json({ error: err.message });
 
               res.json({
                 participant_story_id: participantStoryId,
                 assignment_id: this.lastID,
-                assigned_story: assignedStory
+                assigned_story: lastStory
               });
             }
           );
@@ -106,14 +115,15 @@ app.post("/api/continue", (req, res) => {
   const participantStoryId = Number(req.body.participant_story_id);
   const assignedStoryId = Number(req.body.assigned_story_id);
   const sentence = String(req.body.sentence || "").trim();
+  const photoCode = String(req.body.photo_code || "").trim();
 
   if (!assignmentId || !participantStoryId || !assignedStoryId || !sentence) {
     return res.status(400).json({ error: "Dati mancanti." });
   }
 
   db.run(
-    "INSERT INTO stories(text, kind, parent_story_id) VALUES (?, 'continuation', ?)",
-    [sentence, assignedStoryId],
+"INSERT INTO stories(text, kind, photo_code, parent_story_id) VALUES (?, 'continuation', ?, ?)",
+[sentence, photoCode, assignedStoryId],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
 
