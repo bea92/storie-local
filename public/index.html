@@ -117,6 +117,14 @@
       letter-spacing: .04em;
     }
 
+    .helper {
+      margin: -2px 0 14px;
+      color: rgba(18,61,112,.78);
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
     input,
     textarea {
       width: 100%;
@@ -247,14 +255,14 @@
 
       <section class="paper">
         <h2>
-          Quella bottiglia è mia!<br>
+          Quella bottiglia è mia!
         </h2>
 
         <div class="divider"></div>
 
         <p class="intro">
-         Osserva l'immagine e pensa a una storia della tua vita che possa essere collegata a ciò che rappresenta.
-         Raccontala brevemente, senza includere nomi, cognomi o altri dati personali.
+          Osserva l'immagine e pensa a una storia della tua vita che possa essere collegata a ciò che rappresenta.
+          Raccontala brevemente, senza includere nomi, cognomi o altri dati personali.
         </p>
 
         <section id="step1">
@@ -287,7 +295,7 @@
           <div class="label">
             Questa è un'altra storia dalla collettività
           </div>
-                  <p>...continuala tu, collegandola alla storia precedente</p>
+          <p class="helper">...continuala tu, collegandola alla storia precedente.</p>
 
           <div class="story-card">
             <div id="assignedStory" class="story-text"></div>
@@ -300,7 +308,7 @@
           ></textarea>
 
           <button id="sendSentence">
-            Contribuisci alla storia→
+            Contribuisci alla storia →
           </button>
         </section>
 
@@ -367,8 +375,14 @@
 
       state.assignment_id = data.assignment_id;
       state.participant_story_id = data.participant_story_id;
-      state.assigned_story_id = data.assigned_story.id;
+      state.assigned_story_id = data.assigned_story ? data.assigned_story.id : null;
       state.photo_code = photoCode;
+
+      if (!data.assigned_story) {
+        $("step1").classList.add("hidden");
+        $("done").classList.remove("hidden");
+        return;
+      }
 
       $("assignedStory").innerText = data.assigned_story.text;
       $("photoCode").disabled = true;

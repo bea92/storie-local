@@ -1,8 +1,6 @@
-# Mini Storie Local Linked
+# Mini Storie Render
 
-Mini sito locale per raccogliere storie e collegare le risposte tramite ID.
-
-## Avvio
+## Avvio locale
 
 ```bash
 npm install
@@ -15,36 +13,22 @@ Poi apri:
 http://localhost:3000
 ```
 
-## Dove vanno i dati
-
-I dati vengono salvati nel file SQLite:
-
-```text
-storie.db
-```
-
-nella cartella del progetto.
-
 ## Export
 
 JSON:
 
 ```text
-http://localhost:3000/api/export
+/api/export
 ```
 
 CSV:
 
 ```text
-http://localhost:3000/api/export.csv
+/api/export.csv
 ```
 
-## Struttura dei collegamenti
+## Note
 
-- `stories.id` identifica ogni testo.
-- `stories.parent_story_id` collega una frase/continuazione alla storia precedente.
-- `assignments` salva quale storia è stata data a quale partecipante.
-- `continuations` salva la risposta e collega:
-  - `participant_story_id`: la storia scritta dal partecipante
-  - `assigned_story_id`: la storia ricevuta da continuare
-  - `continuation_story_id`: la frase aggiunta, salvata come nuovo nodo
+- Il codice foto viene salvato in `photo_code`.
+- Ogni nuova storia viene collegata all'ultima storia inserita tramite `parent_story_id`.
+- Gli export includono le connessioni tra storie.

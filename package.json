@@ -1,7 +1,8 @@
 {
-  "name": "storie-local-linked",
-  "version": "1.1.0",
-  "description": "Mini sito locale per raccogliere storie e risposte collegate tramite ID.",
+  "name": "mini-storie-render",
+  "version": "1.0.0",
+  "description": "Mini sito per raccogliere storie e collegarle tramite ID e codice foto.",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
