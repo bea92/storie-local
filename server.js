@@ -8,9 +8,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static("public"));
 
 const seedStories = [
-  `La mia forma è perfetta per galleggiare — nessuno me lo ha mai detto, ma è così. Ho ancora un dito di crema fattore 50 dentro, e me la tengo cara. Le correnti mi hanno portato verso nord, lungo la costa croata, su per l'Adriatico. Un team di ricercatori mi ha usato come tracciatore per mappare le correnti di superficie. In diciotto mesi ho percorso 2.400 chilometri. Non male per qualcuno che doveva finire nel bidone della raccolta differenziata.`,
-  `Sono nato trasparente e leggero. Per settimane sono rimasto impigliato tra le alghe di una piccola baia. Ogni mattina vedevo passare pesci diversi e ogni sera il mare mi spostava di pochi centimetri.`,
-  `Per anni ho custodito acqua fresca durante le estati più calde. Poi sono stato dimenticato sotto una panchina vicino al porto. Pensavo che fosse la fine della mia storia.`
+  `Quel galleggiante arancione lo avevo messo io, il primo anno che lavoravo qui. Era il 1989. Lo sistemavo ogni mattina, controllavo la catena, mi assicuravo che reggesse. Una notte di ottobre se n'è andato con la mareggiata. Non so perché mi ha fatto così effetto — era solo un pezzo di plastica. Ma era anche trentadue anni di confine, di bambini tenuti al sicuro, di estati sorvegliate. Ho chiamato il fornitore il giorno dopo per ordinarne uno nuovo. Non ho detto niente a nessuno di come mi sentivo.`
 ];
 
 db.serialize(() => {
@@ -73,11 +71,21 @@ app.post("/api/story", (req, res) => {
     return res.status(400).json({ error: "Codice foto mancante." });
   }
 
-  db.get(
-    "SELECT * FROM stories ORDER BY id DESC LIMIT 1",
-    [],
-    (err, lastStory) => {
-      if (err) return res.status(500).json({ error: err.message });
+db.get("SELECT COUNT(*) AS count FROM stories", (err, row) => {
+  if (err) return console.error(err);
+
+  if (row.count === 0) {
+    const stmt = db.prepare(
+      "INSERT INTO stories(text, kind, photo_code) VALUES (?, 'seed', ?)"
+    );
+
+    seedStories.forEach(story => {
+      stmt.run(story, "SEED-01");
+    });
+
+    stmt.finalize();
+  }
+});
 
       db.run(
         "INSERT INTO stories(text, kind, photo_code, parent_story_id) VALUES (?, 'original', ?, ?)",
