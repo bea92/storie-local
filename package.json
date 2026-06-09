@@ -1,0 +1,12 @@
+{
+  "name": "storie-local-linked",
+  "version": "1.1.0",
+  "description": "Mini sito locale per raccogliere storie e risposte collegate tramite ID.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
+  }
+}

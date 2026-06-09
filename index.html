@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Storie</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f2ec;
+      --ink: #171717;
+      --muted: #5f5f5f;
+      --card: #ffffff;
+      --border: #d7d0c6;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      max-width: 680px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 32px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    p {
+      line-height: 1.45;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 18px;
+      resize: vertical;
+      background: white;
+    }
+
+    button, a.button {
+      width: 100%;
+      display: block;
+      box-sizing: border-box;
+      margin-top: 12px;
+      padding: 15px;
+      border-radius: 14px;
+      border: 0;
+      background: #111;
+      color: white;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    button:disabled {
+      opacity: .55;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 18px;
+      margin-top: 22px;
+      border: 1px solid rgba(0,0,0,.05);
+    }
+
+    .story-text {
+      white-space: pre-wrap;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .ids {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Mini Storie</h1>
+  <p class="hint">Scrivi una storia. Poi riceverai una storia casuale da continuare con una frase.</p>
+
+  <section id="step1">
+    <textarea id="story" placeholder="Scrivi qui la tua storia..."></textarea>
+    <button id="sendStory">Invia storia</button>
+  </section>
+
+  <section id="step2" class="card hidden">
+    <h2>Continua questa storia</h2>
+    <div id="assignedStory" class="story-text"></div>
+    <div id="ids" class="ids"></div>
+
+    <textarea id="sentence" maxlength="250" placeholder="Aggiungi una frase, max 250 caratteri..."></textarea>
+    <button id="sendSentence">Invia frase</button>
+  </section>
+
+  <section id="done" class="card hidden">
+    <h2>Grazie!</h2>
+    <p>La tua frase è stata salvata e collegata alla storia ricevuta.</p>
+  </section>
+
+  <section class="card">
+    <h2>Export</h2>
+    <p class="hint">Per chi gestisce il workshop: puoi scaricare i dati con gli ID e le connessioni.</p>
+    <a class="button" href="/api/export" target="_blank">Apri export JSON</a>
+    <a class="button" href="/api/export.csv">Scarica export CSV</a>
+  </section>
+</main>
+
+<script>
+let state = {
+  assignment_id: null,
+  participant_story_id: null,
+  assigned_story_id: null
+};
+
+const $ = id => document.getElementById(id);
+
+$("sendStory").addEventListener("click", sendStory);
+$("sendSentence").addEventListener("click", sendSentence);
+
+async function sendStory() {
+  const text = $("story").value.trim();
+
+  if (!text) {
+    alert("Scrivi prima una storia.");
+    return;
+  }
+
+  $("sendStory").disabled = true;
+
+  const response = await fetch("/api/story", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error || "Errore nel salvataggio.");
+    $("sendStory").disabled = false;
+    return;
+  }
+
+  state.assignment_id = data.assignment_id;
+  state.participant_story_id = data.participant_story_id;
+  state.assigned_story_id = data.assigned_story.id;
+
+  $("assignedStory").innerText = data.assigned_story.text;
+  $("ids").innerText =
+    "ID tua storia: " + state.participant_story_id +
+    " | ID storia assegnata: " + state.assigned_story_id +
+    " | ID assegnazione: " + state.assignment_id;
+
+  $("story").disabled = true;
+  $("step2").classList.remove("hidden");
+}
+
+async function sendSentence() {
+  const sentence = $("sentence").value.trim();
+
+  if (!sentence) {
+    alert("Scrivi prima una frase.");
+    return;
+  }
+
+  $("sendSentence").disabled = true;
+
+  const response = await fetch("/api/continue", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      assignment_id: state.assignment_id,
+      participant_story_id: state.participant_story_id,
+      assigned_story_id: state.assigned_story_id,
+      sentence
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error || "Errore nel salvataggio della frase.");
+    $("sendSentence").disabled = false;
+    return;
+  }
+
+  $("step2").classList.add("hidden");
+  $("done").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
