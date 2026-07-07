@@ -275,6 +275,30 @@ app.get("/api/export.csv", (req, res) => {
   );
 });
 
+app.get("/api/chain", (req, res) => {
+  db.all(
+    `SELECT 
+      id,
+      text,
+      kind,
+      photo_code,
+      parent_story_id,
+      created_at
+    FROM stories
+    ORDER BY id ASC`,
+    (err, stories) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.json({
+        stories,
+        continuous_text: stories
+          .map(story => story.text)
+          .join("\n\n↓\n\n")
+      });
+    }
+  );
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
