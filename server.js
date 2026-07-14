@@ -66,19 +66,17 @@ db.serialize(() => {
   db.get("SELECT COUNT(*) AS count FROM stories", (err, row) => {
     if (err) return console.error(err);
 
-    if (row.count === 0) {
-      const stmt = db.prepare(
-        "INSERT INTO stories(text, kind, photo_code, parent_story_id) VALUES (?, 'seed', ?, NULL)"
-      );
+   if (row.count === 0) {
+  const stmt = db.prepare(
+    "INSERT INTO stories(text, kind, photo_code, parent_story_id) VALUES (?, 'seed', ?, NULL)"
+  );
 
-      seedStories.forEach((story, index) => {
-        stmt.run(story, `SEED-${String(index + 1).padStart(2, "0")}`);
-      });
-
-      stmt.finalize();
-    }
+  seedStories.forEach((story) => {
+    stmt.run(story, "01");
   });
-});
+
+  stmt.finalize();
+}
 
 app.post("/api/story", (req, res) => {
   const text = String(req.body.text || "").trim();
