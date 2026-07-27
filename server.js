@@ -8,7 +8,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static("public"));
 
 const seedStories = [
-  `Quel flacone mi sembrava identico a quello che tenevamo sotto il lavello di casa. Da piccolo mi piaceva il rumore dello spruzzino e il profumo pungente che rimaneva nell'aria dopo aver pulito i vetri. Era uno di quegli oggetti così comuni da diventare quasi invisibili. Per questo mi ha colpito trovarne uno sulla spiaggia, scolorito e consumato dal mare. Mi sono chiesto quanto tempo avesse impiegato per arrivare fin lì e quante case, magazzini o garage potesse aver attraversato prima di diventare soltanto un oggetto senza più una funzione apparente.`
+  `Questo flacone mi ricorda le estati della mia infanzia, quando il mare sembrava infinito e le giornate iniziavano con il sole ancora basso. Mia madre tirava fuori la crema dalla borsa frigo e insisteva perché la mettessimo prima di correre in acqua. Noi sbuffavamo, impazienti di andare a giocare. Nessuno avrebbe immaginato che un oggetto così comune potesse attraversare più di cinquant'anni e tornare a raccontare qualcosa. Guardandolo oggi, scolorito e levigato dal mare, mi viene da pensare che certi oggetti conservino il tempo molto meglio di noi.`
 ];
 
 function ensureColumn(table, column, definition) {
