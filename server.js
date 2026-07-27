@@ -8,7 +8,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static("public"));
 
 const seedStories = [
-  `Quel galleggiante arancione lo avevo messo io, il primo anno che lavoravo qui. Era il 1989. Lo sistemavo ogni mattina, controllavo la catena, mi assicuravo che reggesse. Una notte di ottobre se n'è andato con la mareggiata. Non so perché mi ha fatto così effetto — era solo un pezzo di plastica. Ma era anche trentadue anni di confine, di bambini tenuti al sicuro, di estati sorvegliate. Ho chiamato il fornitore il giorno dopo per ordinarne uno nuovo. Non ho detto niente a nessuno di come mi sentivo.`
+  `Quel flacone mi sembrava identico a quello che tenevamo sotto il lavello di casa. Da piccolo mi piaceva il rumore dello spruzzino e il profumo pungente che rimaneva nell'aria dopo aver pulito i vetri. Era uno di quegli oggetti così comuni da diventare quasi invisibili. Per questo mi ha colpito trovarne uno sulla spiaggia, scolorito e consumato dal mare. Mi sono chiesto quanto tempo avesse impiegato per arrivare fin lì e quante case, magazzini o garage potesse aver attraversato prima di diventare soltanto un oggetto senza più una funzione apparente.`
 ];
 
 function ensureColumn(table, column, definition) {
